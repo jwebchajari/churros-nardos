@@ -1,4 +1,4 @@
-import { PAYMENT_METHODS, SITE_COUNTRY, SITE_CITY, SITE_DESCRIPTION, SITE_NAME, SITE_PROVINCE, SITE_URL, productPacks, productUrl, unitPrice, waNumber, instagramUrl, facebookUrl } from "./site";
+import { paymentMethods, SITE_COUNTRY, SITE_CITY, SITE_DESCRIPTION, SITE_NAME, SITE_PROVINCE, SITE_URL, productPacks, productUrl, unitPrice, waNumber, instagramUrl, facebookUrl } from "./site";
 import { openingHoursSpec } from "@/utils/horarios";
 
 export function restaurantJsonLd({ datos, horarios }) {
@@ -16,7 +16,7 @@ export function restaurantJsonLd({ datos, horarios }) {
     servesCuisine: ["Churros"],
     hasMenu: SITE_URL,
     acceptsReservations: false,
-    paymentAccepted: PAYMENT_METHODS.map((m) => m.label).join(", "),
+    paymentAccepted: paymentMethods(datos).map((m) => m.label).join(", "),
     address: {
       "@type": "PostalAddress",
       ...(datos.direccion ? { streetAddress: datos.direccion } : {}),

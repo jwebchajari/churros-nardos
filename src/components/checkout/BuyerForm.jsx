@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Banknote, Bike, Check, Copy, CreditCard, Landmark, MapPin, Route, Store } from "lucide-react";
-import { SHIPPING_ZONES, envioLabel, shippingCost } from "@/lib/site";
+import { SHIPPING_ZONES, cleanOptions, envioLabel, shippingCost } from "@/lib/site";
 import s from "./checkout.module.css";
 
 function Choice({ name, value, checked, onChange, icon: Icon, title, note }) {
@@ -20,6 +20,7 @@ function Choice({ name, value, checked, onChange, icon: Icon, title, note }) {
 export default function BuyerForm({ buyer, setBuyer, datos, errors }) {
   const [copied, setCopied] = useState(false);
   const set = (k) => (v) => setBuyer((b) => ({ ...b, [k]: v }));
+  const options = cleanOptions(datos.opciones);
 
   async function copyAlias() {
     try {
@@ -55,15 +56,17 @@ export default function BuyerForm({ buyer, setBuyer, datos, errors }) {
       <fieldset className={s.fieldset}>
         <legend className="label">¿Cómo lo recibís?</legend>
         <div className={s.choices}>
-          <Choice
-            name="entrega"
-            value="envio"
-            checked={buyer.entrega === "envio"}
-            onChange={set("entrega")}
-            icon={Bike}
-            title="Envío a domicilio"
-            note="El costo depende de la zona"
-          />
+          {options.envio ? (
+            <Choice
+              name="entrega"
+              value="envio"
+              checked={buyer.entrega === "envio"}
+              onChange={set("entrega")}
+              icon={Bike}
+              title="Envío a domicilio"
+              note="El costo depende de la zona"
+            />
+          ) : null}
           <Choice
             name="entrega"
             value="retiro"
@@ -131,15 +134,19 @@ export default function BuyerForm({ buyer, setBuyer, datos, errors }) {
         <legend className="label">¿Cómo pagás?</legend>
         <div className={s.choices}>
           <Choice name="pago" value="efectivo" checked={buyer.pago === "efectivo"} onChange={set("pago")} icon={Banknote} title="Efectivo" />
-          <Choice
-            name="pago"
-            value="transferencia"
-            checked={buyer.pago === "transferencia"}
-            onChange={set("pago")}
-            icon={Landmark}
-            title="Transferencia"
-          />
-          <Choice name="pago" value="tarjeta" checked={buyer.pago === "tarjeta"} onChange={set("pago")} icon={CreditCard} title="Tarjeta" />
+          {options.transferencia ? (
+            <Choice
+              name="pago"
+              value="transferencia"
+              checked={buyer.pago === "transferencia"}
+              onChange={set("pago")}
+              icon={Landmark}
+              title="Transferencia"
+            />
+          ) : null}
+          {options.tarjeta ? (
+            <Choice name="pago" value="tarjeta" checked={buyer.pago === "tarjeta"} onChange={set("pago")} icon={CreditCard} title="Tarjeta" />
+          ) : null}
         </div>
       </fieldset>
 

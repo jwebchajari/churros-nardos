@@ -6,7 +6,7 @@ import { WhatsAppIcon } from "@/components/BrandIcons";
 import { priceCart } from "@/components/menu/CartBar";
 import { useOpenStatus } from "@/components/menu/Hero";
 import { clearCart, useCart } from "@/lib/cart";
-import { envioLabel, formatPrice, packUnits, shippingCost, shippingZone, waNumber, whatsappOrderUrl } from "@/lib/site";
+import { allowedBuyer, envioLabel, formatPrice, packUnits, shippingCost, shippingZone, waNumber, whatsappOrderUrl } from "@/lib/site";
 import BuyerForm from "./BuyerForm";
 import CartLine from "./CartLine";
 import { buildOrderMessage } from "./message";
@@ -29,7 +29,8 @@ export default function CheckoutApp({ data }) {
   const items = useCart();
   const { lines, subtotal, count, units } = priceCart(items, productos);
   const status = useOpenStatus(horarios);
-  const [buyer, setBuyer] = useState(EMPTY_BUYER);
+  const [savedBuyer, setBuyer] = useState(EMPTY_BUYER);
+  const buyer = allowedBuyer(savedBuyer, datos);
   const [errors, setErrors] = useState({});
   const [sent, setSent] = useState(false);
   const loaded = useRef(false);
@@ -52,12 +53,12 @@ export default function CheckoutApp({ data }) {
   useEffect(() => {
     if (!loaded.current) return;
     try {
-      const { nombre, direccion, referencia, entrega, zona } = buyer;
+      const { nombre, direccion, referencia, entrega, zona } = savedBuyer;
       localStorage.setItem(BUYER_KEY, JSON.stringify({ nombre, direccion, referencia, entrega, zona }));
     } catch {
       // ignorar
     }
-  }, [buyer]);
+  }, [savedBuyer]);
 
   const envio = buyer.entrega === "envio";
   const costoEnvio = envio ? shippingCost(datos, buyer.zona) : 0;

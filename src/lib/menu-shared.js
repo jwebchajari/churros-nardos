@@ -1,5 +1,5 @@
 // Normalización de datos de la base. Sin dependencias de runtime: sirve en server, cliente y OG.
-import { categoryAnchor, categoryLabel, categoryOf, categoryRank, MAX_MEATS, MEAT_PRICE_KEYS, MIN_MEATS, cleanPacks } from "./site";
+import { categoryAnchor, categoryLabel, categoryOf, categoryRank, MAX_MEATS, MEAT_PRICE_KEYS, MIN_MEATS, cleanPacks, cleanOptions } from "./site";
 
 function str(v, max = 500) {
   return typeof v === "string" ? v.trim().slice(0, max) : "";
@@ -62,6 +62,7 @@ export function normalizeDatos(raw) {
     alias: str(r.alias, 60),
     costoEnvio: costoOrNull(r.costoEnvio),
     costoEnvioFuera: costoOrNull(r.costoEnvioFuera),
+    opciones: cleanOptions(r.opciones),
     redes: { instagram: str(redes.instagram, 120), facebook: str(redes.facebook, 160) },
   };
 }

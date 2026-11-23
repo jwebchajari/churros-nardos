@@ -2,7 +2,7 @@
 import { Clock, CreditCard, MapPin } from "lucide-react";
 import Sheet from "@/components/ui/Sheet";
 import { FacebookIcon, InstagramIcon, WhatsAppIcon } from "@/components/BrandIcons";
-import { PAYMENT_METHODS, SHIPPING_ZONES, envioLabel, facebookUrl, fullAddress, instagramUrl, mapsUrl, shippingCost, waNumber } from "@/lib/site";
+import { SHIPPING_ZONES, cleanOptions, envioLabel, facebookUrl, fullAddress, instagramUrl, mapsUrl, paymentMethods, shippingCost, waNumber } from "@/lib/site";
 import { DAY_KEYS, DAY_LABELS, WEEK_ORDER, franjasText, hasAnyHorario, nowInZone } from "@/utils/horarios";
 import { StatusPill, useOpenStatus } from "./Hero";
 import s from "./menu.module.css";
@@ -58,22 +58,28 @@ export default function InfoSheet({ open, onClose, datos, horarios }) {
         <h3 id="info-envio" className={s.infoTitle}>
           Envío
         </h3>
-        <ul className={s.hours}>
-          {SHIPPING_ZONES.map((z) => (
-            <li key={z.id}>
-              <span>{z.label}</span>
-              <strong>{envioLabel(shippingCost(datos, z.id))}</strong>
-            </li>
-          ))}
-        </ul>
-        <p>También podés retirar en el local.</p>
+        {cleanOptions(datos.opciones).envio ? (
+          <>
+            <ul className={s.hours}>
+              {SHIPPING_ZONES.map((z) => (
+                <li key={z.id}>
+                  <span>{z.label}</span>
+                  <strong>{envioLabel(shippingCost(datos, z.id))}</strong>
+                </li>
+              ))}
+            </ul>
+            <p>También podés retirar en el local.</p>
+          </>
+        ) : (
+          <p>Por ahora solo retiro en el local.</p>
+        )}
       </section>
 
       <section className={s.infoBlock} aria-labelledby="info-pago">
         <h3 id="info-pago" className={s.infoTitle}>
           <CreditCard size={18} aria-hidden /> Medios de pago
         </h3>
-        <p>{PAYMENT_METHODS.map((m) => m.label).join(", ")}.</p>
+        <p>{paymentMethods(datos).map((m) => m.label).join(", ")}.</p>
       </section>
 
       {wa.length > 3 || ig || fb ? (

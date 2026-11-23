@@ -213,6 +213,30 @@ export function paymentLabel(id) {
   return PAYMENT_METHODS.find((m) => m.id === id)?.label || "Efectivo";
 }
 
+/* ---------------- Opciones del local ---------------- */
+
+/** Lo que no está guardado queda activo: los locales existentes no necesitan cambios en la base. */
+export function cleanOptions(raw) {
+  const r = raw && typeof raw === "object" ? raw : {};
+  return { envio: r.envio !== false, transferencia: r.transferencia !== false, tarjeta: r.tarjeta !== false };
+}
+
+/** Efectivo siempre está disponible, así el pedido nunca queda sin forma de pago. */
+export function paymentMethods(datos) {
+  const options = cleanOptions(datos?.opciones);
+  return PAYMENT_METHODS.filter((m) => m.id === "efectivo" || options[m.id]);
+}
+
+/** Corrige lo elegido si el local apagó esa opción (el navegador puede tener guardada una anterior). */
+export function allowedBuyer(buyer, datos) {
+  const options = cleanOptions(datos?.opciones);
+  return {
+    ...buyer,
+    entrega: options.envio ? buyer.entrega : "retiro",
+    pago: paymentMethods(datos).some((m) => m.id === buyer.pago) ? buyer.pago : "efectivo",
+  };
+}
+
 function validMeats(n) {
   return Number.isInteger(n) && n >= MIN_MEATS && n <= MAX_MEATS;
 }
