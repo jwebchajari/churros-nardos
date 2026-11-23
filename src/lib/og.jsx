@@ -91,19 +91,28 @@ export function SiteCard({ logo }) {
   );
 }
 
+const OG_PHOTO_W = 480;
+const OG_TEXT_W = OG_SIZE.width - OG_PHOTO_W - 96;
+
+/** Achica el nombre para que entre en una línea. Solo los muy largos pasan a dos. */
+function nameStyle(name) {
+  const fit = Math.floor(OG_TEXT_W / (name.length * 0.47));
+  return fit >= 46 ? { fontSize: Math.min(fit, 84), whiteSpace: "nowrap" } : { fontSize: 46 };
+}
+
 export function ProductCard({ name, price, image, logo }) {
   return (
     <Frame>
       {image ? (
-        <img src={image} width={560} height={630} style={{ objectFit: "cover", width: 560, height: 630 }} alt="" />
+        <img src={image} width={OG_PHOTO_W} height={630} style={{ objectFit: "cover", width: OG_PHOTO_W, height: 630 }} alt="" />
       ) : (
-        <div style={{ width: 560, height: 630, display: "flex", alignItems: "center", justifyContent: "center", background: "#38281C" }}>
+        <div style={{ width: OG_PHOTO_W, height: 630, display: "flex", alignItems: "center", justifyContent: "center", background: "#38281C" }}>
           <img src={logo} width={340} height={340} style={{ borderRadius: 340 }} alt="" />
         </div>
       )}
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flex: 1, padding: "56px 56px 48px" }}>
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: OG_TEXT_W + 96, padding: "56px 48px 48px" }}>
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: name.length > 22 ? 64 : 84, lineHeight: 1.02 }}>{name}</div>
+          <div style={{ ...nameStyle(name), lineHeight: 1.05 }}>{name}</div>
           <div style={{ fontSize: 76, marginTop: 20, color: BRAND.sand }}>{price}</div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>

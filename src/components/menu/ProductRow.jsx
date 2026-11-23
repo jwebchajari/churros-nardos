@@ -37,7 +37,7 @@ export default function ProductRow({ product, onOpen, large = false }) {
   return (
     <li className={`${s.row} ${hasImage ? s.rowHasImg : ""}`}>
       {hasImage ? (
-        <ProductImage src={product.imagen} alt="" width={large ? 720 : 160} ratio={large ? "4 / 3" : "1 / 1"} className={s.rowImg} />
+        <ProductImage src={product.imagen} alt="" width={large ? 280 : 200} ratio="1 / 1" className={s.rowImg} />
       ) : null}
       <div className={s.rowText}>
         <div className={s.rowLine}>

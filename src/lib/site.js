@@ -29,6 +29,7 @@ export const SITE_DESCRIPTION =
 // Colores de marca para manifest, themeColor y OG (la UI usa los tokens de globals.css).
 export const BRAND = {
   wood: "#2C1F16",
+  bg: "#D8BD94",
   sand: "#ECD9AE",
   cream: "#F7EEDC",
 };

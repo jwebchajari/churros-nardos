@@ -24,7 +24,7 @@ export function normalizeProduct(id, raw) {
   const medOk = Number.isInteger(med) && med >= MIN_MEATS && med <= MAX_MEATS;
   return {
     id: String(id),
-    nombre: str(r.nombre, 80) || "Sin nombre",
+    nombre: str(r.nombre, 80).replace(/´/g, "’") || "Sin nombre",
     descripcion: str(r.descripcion, 400),
     categoria,
     valor,

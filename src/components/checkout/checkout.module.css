@@ -13,7 +13,7 @@
   gap: 8px;
   min-height: var(--header-h);
   padding: env(safe-area-inset-top) 8px 0;
-  background: rgba(44, 31, 22, 0.92);
+  background: rgba(216, 189, 148, 0.94);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }
@@ -66,6 +66,14 @@
   font-family: var(--font-display);
   font-weight: 400;
   font-size: 24px;
+}
+
+.blockCount {
+  margin-left: auto;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-muted);
 }
 
 .blockTitle::before {
@@ -300,7 +308,7 @@
   justify-items: center;
   gap: 6px;
   padding: 24px var(--gutter) calc(12px + env(safe-area-inset-bottom));
-  background: linear-gradient(to top, rgba(44, 31, 22, 0.96) 55%, rgba(44, 31, 22, 0));
+  background: linear-gradient(to top, rgba(216, 189, 148, 0.96) 55%, rgba(216, 189, 148, 0));
 }
 
 .sendBar > * {

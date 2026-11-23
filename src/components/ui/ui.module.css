@@ -118,13 +118,16 @@
   width: var(--tap);
   height: var(--tap);
   border-radius: 999px;
-  background: rgba(44, 31, 22, 0.55);
-  color: var(--text);
+  /* Oscuro con borde claro: se distingue sobre la foto y sobre el fondo crema. */
+  background: var(--wood);
+  color: var(--sand);
+  box-shadow: 0 0 0 2px var(--sand), 0 3px 10px rgba(44, 31, 22, 0.45);
   flex-shrink: 0;
+  transition: background-color 0.15s;
 }
 
 .iconBtn:hover {
-  background: var(--surface-3);
+  background: #543e2d;
 }
 
 /* ---------- Stepper ---------- */

@@ -10,8 +10,8 @@ export default function manifest() {
     scope: "/",
     display: "standalone",
     orientation: "portrait",
-    background_color: BRAND.wood,
-    theme_color: BRAND.wood,
+    background_color: BRAND.bg,
+    theme_color: BRAND.bg,
     categories: ["food", "shopping"],
     icons: [
       { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },

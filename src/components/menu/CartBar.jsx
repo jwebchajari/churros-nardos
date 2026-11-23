@@ -9,6 +9,7 @@ import s from "./menu.module.css";
 export function priceCart(items, productos) {
   const byId = new Map(productos.filter((p) => !p.oculto).map((p) => [p.id, p]));
   let count = 0;
+  let units = 0;
   let subtotal = 0;
   const lines = [];
   for (const it of items) {
@@ -17,30 +18,32 @@ export function priceCart(items, productos) {
     // Un carrito guardado puede traer una cantidad de carnes que ya no existe.
     const base = baseMeats(product);
     const meats = isCustomizable(product) ? clampMeats(it.meats ?? base, base) : null;
-    const pack = resolvePack(product, it.pack)?.key ?? null;
+    const chosenPack = resolvePack(product, it.pack);
+    const pack = chosenPack?.key ?? null;
     const unit = linePrice(product, { meats, pack });
     count += it.qty;
+    units += it.qty * (chosenPack?.cantidad ?? 1);
     subtotal += unit * it.qty;
     lines.push({ ...it, meats, pack, product, unit, total: unit * it.qty });
   }
-  return { count, subtotal, lines };
+  return { count, units, subtotal, lines };
 }
 
 export default function CartBar({ productos }) {
   const items = useCart();
-  const { count, subtotal } = priceCart(items, productos);
+  const { count, units, subtotal } = priceCart(items, productos);
   if (count === 0) return null;
 
   return (
     <div className={s.cartBar}>
       <Link href="/comprar" className={s.cartBtn}>
         <span className={s.cartCount} aria-hidden>
-          {count}
+          {units}
         </span>
         <span className={s.cartLabel}>
           <ShoppingBag size={18} aria-hidden />
           Ver pedido
-          <span className="visually-hidden">, {count} {count === 1 ? "producto" : "productos"}</span>
+          <span className="visually-hidden">, {units} {units === 1 ? "unidad" : "unidades"}</span>
         </span>
         <span className={s.cartTotal}>{formatPrice(subtotal)}</span>
       </Link>

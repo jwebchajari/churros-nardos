@@ -5,7 +5,7 @@
   padding-bottom: 104px;
 }
 
-/* ---------- Hero: cartel de madera con el marco del logo ---------- */
+/* ---------- Hero: cartel oscuro, con sus propios tokens sobre el fondo claro ---------- */
 .hero {
   padding: calc(16px + env(safe-area-inset-top)) var(--gutter) 4px;
 }
@@ -17,7 +17,16 @@
   gap: 6px;
   padding: 30px 22px 22px;
   text-align: center;
-  background: linear-gradient(180deg, rgba(84, 62, 45, 0.62), rgba(56, 40, 28, 0.78));
+  --text: var(--cream);
+  --text-muted: #d9c8a6;
+  --text-faint: #c4b190;
+  --surface-3: #543e2d;
+  --accent: var(--sand);
+  --ok: #8fd19e;
+  --ok-soft: rgba(143, 209, 158, 0.14);
+  --line-strong: rgba(236, 217, 174, 0.34);
+  color: var(--text);
+  background: var(--wood);
   border: 1px solid var(--sand);
   outline: 1px solid var(--line-strong);
   outline-offset: -7px;
@@ -127,7 +136,7 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  background: rgba(44, 31, 22, 0.9);
+  background: rgba(216, 189, 148, 0.94);
   backdrop-filter: saturate(1.4) blur(10px);
   border-bottom: 1px solid var(--line);
 }
@@ -189,7 +198,7 @@
   font-weight: 400;
   font-size: 34px;
   line-height: 1.1;
-  color: var(--sand);
+  color: var(--text);
 }
 
 .sectionTitle::before,
@@ -203,39 +212,41 @@
 .list {
   list-style: none;
   display: grid;
+  gap: 12px;
 }
 
-.list[data-density="pocos"] {
-  gap: 26px;
-}
-
+/* Cada producto es una tarjeta: separa uno de otro y mantiene la foto chica. */
 .row {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 14px;
-  align-items: center;
-  padding: 14px 2px;
-  border-bottom: 1px dashed var(--line-strong);
+  gap: 12px;
+  align-items: stretch;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(44, 31, 22, 0.14);
 }
 
 .rowHasImg {
-  grid-template-columns: 72px minmax(0, 1fr);
+  grid-template-columns: 84px minmax(0, 1fr);
 }
 
-.list[data-density="pocos"] .row {
-  grid-template-columns: minmax(0, 1fr);
-  gap: 12px;
-  padding: 0 0 20px;
+.list[data-density="pocos"] .rowHasImg {
+  grid-template-columns: 116px minmax(0, 1fr);
 }
 
 .row:has(.rowBtn:focus-visible) {
   outline: 3px solid var(--accent);
   outline-offset: 3px;
-  border-radius: 3px;
+  border-radius: 12px;
 }
 
+/* La columna ocupa toda la tarjeta para que los botones queden al fondo. */
 .rowText {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
 }
 
@@ -248,14 +259,14 @@
 .rowName {
   min-width: 0;
   font-family: var(--font-display);
-  font-size: 25px;
+  font-size: 23px;
   font-weight: 400;
   line-height: 1.12;
   transition: color 0.15s;
 }
 
 .row:hover .rowName {
-  color: var(--sand);
+  color: var(--text);
 }
 
 .rowBtn {
@@ -291,7 +302,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: auto;
+  padding-top: 8px;
 }
 
 .rowCta {
@@ -311,18 +323,11 @@
 }
 
 .rowImg {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  overflow: hidden;
-  box-shadow: 0 0 0 2px var(--sand);
-}
-
-.list[data-density="pocos"] .rowImg {
+  align-self: start;
   width: 100%;
   height: auto;
-  border-radius: 3px;
-  box-shadow: 0 0 0 1px var(--sand), 0 12px 26px rgba(20, 13, 9, 0.42);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .img {
@@ -350,7 +355,7 @@
   gap: 8px;
   font-size: 20px;
   font-weight: 800;
-  color: var(--sand);
+  color: var(--text);
   font-variant-numeric: tabular-nums;
 }
 
@@ -401,9 +406,31 @@
 .sheetHead {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 12px;
   margin: 16px 0 6px;
+}
+
+.sheetHeadEnd {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+}
+
+.sheetShare {
+  display: inline-grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--text);
+  transition: background-color 0.15s;
+}
+
+.sheetShare:hover {
+  background: var(--surface-3);
 }
 
 .sheetName {
@@ -519,12 +546,6 @@
   outline-offset: 0;
 }
 
-.shareRow {
-  display: flex;
-  justify-content: center;
-  padding-top: 12px;
-}
-
 /* ---------- Spotlight ---------- */
 .spotlight {
   padding: 0 var(--gutter) 12px;
@@ -584,7 +605,7 @@
   bottom: 0;
   z-index: 30;
   padding: 24px var(--gutter) calc(12px + env(safe-area-inset-bottom));
-  background: linear-gradient(to top, rgba(44, 31, 22, 0.95) 45%, rgba(44, 31, 22, 0));
+  background: linear-gradient(to top, rgba(216, 189, 148, 0.95) 45%, rgba(216, 189, 148, 0));
   pointer-events: none;
 }
 
@@ -620,8 +641,8 @@
   height: 38px;
   padding: 0 8px;
   border-radius: 3px;
-  background: var(--wood);
-  color: var(--cream);
+  background: var(--sand);
+  color: var(--wood);
   font-variant-numeric: tabular-nums;
 }
 
@@ -647,8 +668,8 @@
   max-width: calc(100% - 32px);
   padding: 10px 18px;
   border-radius: 999px;
-  background: var(--cream);
-  color: var(--wood);
+  background: var(--wood);
+  color: var(--cream);
   font-weight: 700;
   font-size: 15px;
   box-shadow: var(--shadow);
@@ -790,12 +811,8 @@
   color: var(--text);
 }
 
-.list[data-density="carta"] .row {
-  align-items: start;
-}
-
 .list[data-density="carta"] .rowName {
-  font-size: 22px;
+  font-size: 21px;
 }
 
 /* En la lista larga toda la fila abre la ficha: el botón solo agregaría altura. */
@@ -810,8 +827,8 @@
   }
   .list[data-density="pocos"] {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 30px 26px;
-    align-items: start;
+    gap: 14px;
+    align-items: stretch;
   }
   /* Un producto suelto ocupa el ancho: no deja un hueco al lado. */
   .list[data-density="pocos"] .row:last-child:nth-child(odd) {
@@ -844,6 +861,74 @@
 .packPrice {
   font-size: 20px;
   font-weight: 800;
-  color: var(--sand);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.packOpt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 60px;
+  padding: 8px 8px 8px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.packOpt[data-active="true"] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.packOptText {
+  display: grid;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.packOptText strong {
+  font-size: 17px;
+}
+
+.packOptText small {
+  font-size: 15px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.packDivider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.packDivider::before,
+.packDivider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line-strong);
+}
+
+.addTotal {
+  display: grid;
+  flex: none;
+  min-width: 92px;
+  line-height: 1.15;
+}
+
+.addTotal small {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.addTotal strong {
+  font-size: 18px;
   font-variant-numeric: tabular-nums;
 }

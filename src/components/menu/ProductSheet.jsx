@@ -21,21 +21,42 @@ import ProductImage from "./ProductImage";
 import { Price } from "./ProductRow";
 import s from "./menu.module.css";
 
+/** Una forma de comprar el producto, con su propio contador. */
+function PackOption({ pack, value, onChange }) {
+  const single = pack.cantidad === 1;
+  const title = single ? "Por unidad" : pack.key;
+  return (
+    <div className={s.packOpt} data-active={value > 0 ? "true" : "false"}>
+      <span className={s.packOptText}>
+        <strong>{title}</strong>
+        <small>{single ? `${formatPrice(pack.precio)} c/u` : formatPrice(pack.precio)}</small>
+      </span>
+      <Stepper size="sm" value={value} min={0} max={20} onChange={onChange} label={`Cantidad ${title}`} />
+    </div>
+  );
+}
+
 function ProductForm({ product, onAdded }) {
   const custom = isCustomizable(product);
   const base = baseMeats(product);
   const [meats, setMeats] = useState(base);
   const packs = productPacks(product);
-  const [pack, setPack] = useState(packs[0]?.key ?? null);
+  const [counts, setCounts] = useState(() => (packs[0] ? { [packs[0].key]: 1 } : {}));
   const [qty, setQty] = useState(1);
   const [nota, setNota] = useState("");
 
-  const unit = linePrice(product, { meats, pack });
-  const total = unit * qty;
+  const hasPacks = packs.length > 0;
+  const singlePack = packs.find((p) => p.cantidad === 1);
+  const otherPacks = packs.filter((p) => p.cantidad !== 1);
+  const chosen = packs.map((p) => ({ ...p, qty: counts[p.key] || 0 })).filter((p) => p.qty > 0);
+  const units = hasPacks ? chosen.reduce((n, p) => n + p.cantidad * p.qty, 0) : qty;
+  const total = hasPacks ? chosen.reduce((n, p) => n + p.precio * p.qty, 0) : linePrice(product, { meats }) * qty;
+  const setCount = (key) => (value) => setCounts((c) => ({ ...c, [key]: value }));
 
   function add() {
-    addItem({ id: product.id, qty, meats: custom ? meats : null, pack, nota });
-    onAdded(qty);
+    if (hasPacks) chosen.forEach((p) => addItem({ id: product.id, qty: p.qty, pack: p.key, nota }));
+    else addItem({ id: product.id, qty, meats: custom ? meats : null, nota });
+    onAdded(units);
   }
 
   const meatOptions = [];
@@ -48,7 +69,10 @@ function ProductForm({ product, onAdded }) {
         <p className={s.sheetName} aria-hidden="true">
           {product.nombre}
         </p>
-        <Price product={product} big pack={pack} />
+        <div className={s.sheetHeadEnd}>
+          {hasPacks ? null : <Price product={product} big />}
+          <ShareButton compact title={product.nombre} text={`Mirá ${product.nombre} en ${SITE_NAME}`} path={productPath(product.id)} className={s.sheetShare} />
+        </div>
       </div>
       {product.descripcion ? <p className={s.sheetDesc}>{product.descripcion}</p> : null}
       {includesFries(product) ? <p className={s.fries}>Incluye papas fritas</p> : null}
@@ -68,18 +92,18 @@ function ProductForm({ product, onAdded }) {
         </fieldset>
       ) : null}
 
-      {packs.length > 1 ? (
+      {hasPacks ? (
         <fieldset className={s.optGroup}>
-          <legend className={s.optLegend}>Elegí la cantidad</legend>
+          <legend className={s.optLegend}>Elegí cuántos querés</legend>
           <div className={s.optList}>
-            {packs.map((p) => (
-              <label key={p.key} className={s.opt}>
-                <input type="radio" name="pack" value={p.key} checked={pack === p.key} onChange={() => setPack(p.key)} />
-                <span className={s.optLabel}>
-                  {p.key} <small>{packUnits(p.cantidad)}</small>
-                </span>
-                <span className={s.optPrice}>{formatPrice(p.precio)}</span>
-              </label>
+            {singlePack ? <PackOption pack={singlePack} value={counts[singlePack.key] || 0} onChange={setCount(singlePack.key)} /> : null}
+            {singlePack && otherPacks.length ? (
+              <p className={s.packDivider}>
+                <span>o por cantidad</span>
+              </p>
+            ) : null}
+            {otherPacks.map((p) => (
+              <PackOption key={p.key} pack={p} value={counts[p.key] || 0} onChange={setCount(p.key)} />
             ))}
           </div>
         </fieldset>
@@ -98,15 +122,19 @@ function ProductForm({ product, onAdded }) {
       </label>
 
       <div className={s.addBar}>
-        <Stepper value={qty} onChange={setQty} max={20} />
-        <button type="button" className="btn btn-primary btn-lg" onClick={add} style={{ flex: 1 }}>
-          Agregar {formatPrice(total)}
+        {hasPacks ? (
+          <p className={s.addTotal} aria-live="polite">
+            <small>Total</small>
+            <strong>{packUnits(units)}</strong>
+          </p>
+        ) : (
+          <Stepper value={qty} onChange={setQty} max={20} />
+        )}
+        <button type="button" className="btn btn-primary btn-lg" onClick={add} disabled={units === 0} style={{ flex: 1 }}>
+          {units === 0 ? "Elegí una cantidad" : `Agregar ${formatPrice(total)}`}
         </button>
       </div>
 
-      <div className={s.shareRow}>
-        <ShareButton title={product.nombre} text={`Mirá ${product.nombre} en ${SITE_NAME}`} path={productPath(product.id)} />
-      </div>
     </>
   );
 }

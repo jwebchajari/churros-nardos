@@ -4,33 +4,33 @@
   --sand: #ecd9ae;
   --cream: #f7eedc;
 
-  --bg: var(--wood);
-  --surface: #38281c;
-  --surface-2: #453224;
-  --surface-3: #543e2d;
-  --line: rgba(236, 217, 174, 0.16);
-  --line-strong: rgba(236, 217, 174, 0.34);
+  --bg: #d8bd94;
+  --surface: #f7eedc;
+  --surface-2: #ecd9ae;
+  --surface-3: #e2c994;
+  --line: rgba(44, 31, 22, 0.18);
+  --line-strong: rgba(44, 31, 22, 0.38);
 
-  --text: var(--cream);
-  --text-muted: #d9c8a6;
-  --text-faint: #c4b190;
+  --text: var(--wood);
+  --text-muted: #4a3627;
+  --text-faint: #5a4433;
 
-  --accent: var(--sand);
-  --accent-fill: var(--sand); /* con texto madera: contraste 11.5:1 */
-  --accent-fill-hover: #dcc592;
-  --accent-soft: rgba(236, 217, 174, 0.14);
-  --on-accent: var(--wood);
+  --accent: var(--wood);
+  --accent-fill: var(--wood); /* con texto arena: contraste 11.5:1 */
+  --accent-fill-hover: #453224;
+  --accent-soft: rgba(44, 31, 22, 0.1);
+  --on-accent: var(--sand);
 
-  --ok: #8fd19e;
-  --ok-soft: rgba(143, 209, 158, 0.14);
-  --warn: #f2b95c;
-  --danger: #ff9a85;
+  --ok: #14532d;
+  --ok-soft: rgba(20, 83, 45, 0.12);
+  --warn: #6b4000;
+  --danger: #8a1f0b;
 
   --radius-sm: 10px;
   --radius: 16px;
   --radius-lg: 24px;
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  --shadow-up: 0 -8px 30px rgba(0, 0, 0, 0.6);
+  --shadow: 0 10px 30px rgba(44, 31, 22, 0.3);
+  --shadow-up: 0 -8px 30px rgba(44, 31, 22, 0.3);
 
   --header-h: 56px;
   --nav-h: 56px;
@@ -41,7 +41,7 @@
   --font-display: var(--font-brand), Georgia, serif;
   --font-body: var(--font-text), system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 *,
@@ -62,7 +62,7 @@ html {
 
 body {
   min-height: 100dvh;
-  background: var(--bg) url("/wood.webp");
+  background: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
   font-size: 17px;

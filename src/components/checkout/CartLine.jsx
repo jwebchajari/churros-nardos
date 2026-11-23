@@ -14,7 +14,6 @@ export default function CartLine({ line }) {
   const [nota, setNota] = useState(line.nota || "");
   const packs = productPacks(product);
   const currentPack = packs.find((p) => p.key === line.pack);
-  const packId = `pack-${line.key}`;
   const meatsId = `meats-${line.key}`;
   const notaId = `nota-${line.key}`;
 
@@ -30,8 +29,9 @@ export default function CartLine({ line }) {
           <span className={s.lineTotal}>{formatPrice(line.total)}</span>
         </div>
         <p className={s.lineUnit}>
-          {currentPack ? `${currentPack.key}: ` : ""}
-          {formatPrice(line.unit)} c/u
+          {currentPack && currentPack.cantidad > 1
+            ? `${currentPack.key}: ${formatPrice(line.unit)} · ${packUnits(currentPack.cantidad * line.qty)}`
+            : `${formatPrice(line.unit)} c/u`}
         </p>
 
         {custom && meatOptions.length > 1 ? (
@@ -46,19 +46,6 @@ export default function CartLine({ line }) {
               {meatOptions.map((n) => (
                 <option key={n} value={n}>
                   {meatLabel(n)}
-                </option>
-              ))}
-            </select>
-          </div>
-        ) : null}
-
-        {packs.length > 1 ? (
-          <div className={s.lineField}>
-            <label htmlFor={packId}>Cantidad</label>
-            <select id={packId} className="input" value={line.pack ?? packs[0].key} onChange={(e) => updateItem(line.key, { pack: e.target.value })}>
-              {packs.map((p) => (
-                <option key={p.key} value={p.key}>
-                  {p.key} ({packUnits(p.cantidad)})
                 </option>
               ))}
             </select>

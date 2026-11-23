@@ -6,7 +6,7 @@ import { WhatsAppIcon } from "@/components/BrandIcons";
 import { priceCart } from "@/components/menu/CartBar";
 import { useOpenStatus } from "@/components/menu/Hero";
 import { clearCart, useCart } from "@/lib/cart";
-import { envioLabel, formatPrice, shippingCost, shippingZone, waNumber, whatsappOrderUrl } from "@/lib/site";
+import { envioLabel, formatPrice, packUnits, shippingCost, shippingZone, waNumber, whatsappOrderUrl } from "@/lib/site";
 import BuyerForm from "./BuyerForm";
 import CartLine from "./CartLine";
 import { buildOrderMessage } from "./message";
@@ -27,7 +27,7 @@ const EMPTY_BUYER = {
 export default function CheckoutApp({ data }) {
   const { productos, datos, horarios } = data;
   const items = useCart();
-  const { lines, subtotal, count } = priceCart(items, productos);
+  const { lines, subtotal, count, units } = priceCart(items, productos);
   const status = useOpenStatus(horarios);
   const [buyer, setBuyer] = useState(EMPTY_BUYER);
   const [errors, setErrors] = useState({});
@@ -111,6 +111,7 @@ export default function CheckoutApp({ data }) {
       <section className={s.block} aria-labelledby="h-pedido">
         <h2 id="h-pedido" className={s.blockTitle}>
           Tu pedido
+          <span className={s.blockCount}>{packUnits(units)}</span>
         </h2>
         <ul className={s.lines}>
           {lines.map((l) => (
