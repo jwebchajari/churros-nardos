@@ -4,7 +4,7 @@ import MenuApp from "@/components/menu/MenuApp";
 import { MenuSkeleton } from "@/components/Loading";
 import { JsonLd, productJsonLd } from "@/lib/jsonld";
 import { getLocal, getProduct } from "@/lib/menu";
-import { SITE_NAME, formatPrice, productPath, unitPrice } from "@/lib/site";
+import { SITE_NAME, priceText, productPath } from "@/lib/site";
 
 // Con Cache Components tiene que devolver al menos un param. Si todavía no hay productos,
 // se prerenderiza un id inexistente que responde 404.
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }) {
   const { id } = await params;
   const p = await getProduct(id);
   if (!p) return { title: "Producto no encontrado", robots: { index: false } };
-  const description = (p.descripcion || `${p.nombre} en ${SITE_NAME}.`).slice(0, 150) + ` ${formatPrice(unitPrice(p))}.`;
+  const description = (p.descripcion || `${p.nombre} en ${SITE_NAME}.`).slice(0, 150) + ` ${priceText(p)}.`;
   return {
     title: p.nombre,
     description,

@@ -85,7 +85,7 @@ export default function CheckoutApp({ data }) {
         <TopBar />
         <div className={s.empty}>
           <p className={s.emptyTitle}>{sent ? "Pedido vaciado" : "Tu pedido está vacío"}</p>
-          <p className="hint">Elegí tus burgers en la carta y volvé acá para mandarlo.</p>
+          <p className="hint">Elegí tus churros en la carta y volvé acá para mandarlo.</p>
           <Link href="/" className="btn btn-primary">
             Ver la carta
           </Link>

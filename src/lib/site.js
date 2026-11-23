@@ -41,15 +41,18 @@ export const CLOUDINARY_ROOT = "CardCloude";
 
 /* ---------------- Categorías ---------------- */
 
-// El panel central no tiene categoría "churros": se cargan en "otros" y acá se muestran como Churros.
+// "Otros" se muestra como Churros. Las categorías escritas a mano en el panel se agregan solas.
 export const CATEGORIES = [
   { id: "otros", label: "Churros" },
+  { id: "hamburguesas", label: "Hamburguesas" },
+  { id: "sandwich", label: "Sandwiches" },
+  { id: "papas", label: "Papas" },
+  { id: "frutas", label: "Frutas" },
+  { id: "verduras", label: "Verduras" },
   { id: "bebidas", label: "Bebidas" },
 ];
 
 export const CATEGORY_ALIASES = {
-  churro: "otros",
-  churros: "otros",
   bebida: "bebidas",
   gaseosa: "bebidas",
   gaseosas: "bebidas",
@@ -65,15 +68,49 @@ export function slugText(raw) {
     .trim();
 }
 
-/** Normaliza lo que escribe el dueño. Desconocido cae en "otros". */
+export const MAX_CATEGORY_NAME = 40;
+
+function cleanCategoryName(raw) {
+  return String(raw ?? "").trim().replace(/\s+/g, " ").slice(0, MAX_CATEGORY_NAME);
+}
+
+/** Categoría común si coincide con una. Si no, el nombre que escribió el dueño. Vacío cae en "otros". */
 export function categoryOf(raw) {
-  const s = slugText(raw);
-  if (CATEGORIES.some((c) => c.id === s)) return s;
-  return CATEGORY_ALIASES[s] || "otros";
+  const name = cleanCategoryName(raw);
+  if (!name) return "otros";
+  const s = slugText(name);
+  const common = CATEGORIES.find((c) => c.id === s || slugText(c.label) === s);
+  return common?.id || CATEGORY_ALIASES[s] || name;
+}
+
+export function isCommonCategory(id) {
+  return CATEGORIES.some((c) => c.id === id);
 }
 
 export function categoryLabel(id) {
-  return CATEGORIES.find((c) => c.id === id)?.label || "Otros";
+  return CATEGORIES.find((c) => c.id === id)?.label || cleanCategoryName(id) || "Otros";
+}
+
+/** Orden en la carta: las propias del local van antes de la última categoría común. */
+export function categoryRank(id) {
+  const i = CATEGORIES.findIndex((c) => c.id === id);
+  return i >= 0 ? i : CATEGORIES.length - 1.5;
+}
+
+/** Identificador seguro para anclas y atributos HTML. */
+export function categoryAnchor(id) {
+  return slugText(id).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "otra";
+}
+
+/** Categorías propias sin repetidos (ignora mayúsculas y acentos), en orden alfabético. */
+export function customCategories(list) {
+  const seen = new Map();
+  for (const item of list) {
+    const name = cleanCategoryName(item);
+    const key = slugText(name);
+    if (name && !seen.has(key) && !isCommonCategory(categoryOf(name))) seen.set(key, name);
+  }
+  return [...seen.values()].sort((a, b) => a.localeCompare(b, "es"));
 }
 
 /* ---------------- Personalización del rubro ---------------- */
@@ -193,20 +230,67 @@ export function meatLabel(n) {
   return MEAT_LABELS[n] || `${n} medallones`;
 }
 
+/* ---------------- Venta por cantidad ---------------- */
+
+export const MAX_PACKS = 8;
+export const MAX_PACK_QTY = 999;
+
+export function packKey(cantidad) {
+  return `x${cantidad}`;
+}
+
+export function packUnits(cantidad) {
+  return cantidad === 1 ? "1 unidad" : `${cantidad} unidades`;
+}
+
+/** Deja solo presentaciones válidas, de menor a mayor cantidad: { x1: 3000, x6: 15000 }. */
+export function cleanPacks(raw) {
+  if (!raw || typeof raw !== "object") return {};
+  const valid = Object.entries(raw)
+    .map(([key, value]) => ({ cantidad: Number(/^x([1-9]\d{0,2})$/.exec(key)?.[1]), precio: Math.round(Number(value)) }))
+    .filter((p) => p.cantidad > 0 && p.precio > 0 && p.precio <= 100000000)
+    .sort((a, b) => a.cantidad - b.cantidad)
+    .slice(0, MAX_PACKS);
+  return Object.fromEntries(valid.map((p) => [packKey(p.cantidad), p.precio]));
+}
+
+export function productPacks(product) {
+  return Object.entries(cleanPacks(product?.presentaciones)).map(([key, precio]) => ({ key, cantidad: Number(key.slice(1)), precio }));
+}
+
+/** La presentación elegida. Si ya no existe, la primera: el carrito la muestra y se puede cambiar. */
+export function resolvePack(product, key) {
+  const packs = productPacks(product);
+  return packs.find((p) => p.key === key) || packs[0] || null;
+}
+
+/** Precio en una línea para vistas previas, metadata y tarjetas. */
+export function priceText(product) {
+  const packs = productPacks(product);
+  if (!packs.length) return formatPrice(unitPrice(product));
+  if (packs.length === 1) return `${packs[0].key} ${formatPrice(packs[0].precio)}`;
+  return `Desde ${formatPrice(Math.min(...packs.map((p) => p.precio)))}`;
+}
+
 /* ---------------- Precios ---------------- */
 
 export function hasOffer(p) {
+  if (productPacks(p).length) return false;
   const v = Number(p?.valor);
   const o = Number(p?.valorOferta);
   return Boolean(p?.oferta) && o > 0 && o < v;
 }
 
 export function unitPrice(p) {
+  const packs = productPacks(p);
+  if (packs.length) return packs[0].precio;
   return hasOffer(p) ? Number(p.valorOferta) : Number(p?.valor) || 0;
 }
 
 /** Precio unitario de una línea con sus opciones. */
 export function linePrice(product, options = {}) {
+  const pack = resolvePack(product, options.pack);
+  if (pack) return pack.precio;
   let price = unitPrice(product);
   if (isCustomizable(product)) {
     const base = baseMeats(product);

@@ -13,6 +13,8 @@ import {
   isCustomizable,
   linePrice,
   meatLabel,
+  packUnits,
+  productPacks,
   productPath,
 } from "@/lib/site";
 import ProductImage from "./ProductImage";
@@ -23,14 +25,16 @@ function ProductForm({ product, onAdded }) {
   const custom = isCustomizable(product);
   const base = baseMeats(product);
   const [meats, setMeats] = useState(base);
+  const packs = productPacks(product);
+  const [pack, setPack] = useState(packs[0]?.key ?? null);
   const [qty, setQty] = useState(1);
   const [nota, setNota] = useState("");
 
-  const unit = linePrice(product, { meats });
+  const unit = linePrice(product, { meats, pack });
   const total = unit * qty;
 
   function add() {
-    addItem({ id: product.id, qty, meats: custom ? meats : null, nota });
+    addItem({ id: product.id, qty, meats: custom ? meats : null, pack, nota });
     onAdded(qty);
   }
 
@@ -44,7 +48,7 @@ function ProductForm({ product, onAdded }) {
         <p className={s.sheetName} aria-hidden="true">
           {product.nombre}
         </p>
-        <Price product={product} big />
+        <Price product={product} big pack={pack} />
       </div>
       {product.descripcion ? <p className={s.sheetDesc}>{product.descripcion}</p> : null}
       {includesFries(product) ? <p className={s.fries}>Incluye papas fritas</p> : null}
@@ -58,6 +62,23 @@ function ProductForm({ product, onAdded }) {
                 <input type="radio" name="meats" value={n} checked={meats === n} onChange={() => setMeats(n)} />
                 <span className={s.optLabel}>{meatLabel(n)}</span>
                 <span className={s.optPrice}>{formatPrice(linePrice(product, { meats: n }))}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      ) : null}
+
+      {packs.length > 1 ? (
+        <fieldset className={s.optGroup}>
+          <legend className={s.optLegend}>Elegí la cantidad</legend>
+          <div className={s.optList}>
+            {packs.map((p) => (
+              <label key={p.key} className={s.opt}>
+                <input type="radio" name="pack" value={p.key} checked={pack === p.key} onChange={() => setPack(p.key)} />
+                <span className={s.optLabel}>
+                  {p.key} <small>{packUnits(p.cantidad)}</small>
+                </span>
+                <span className={s.optPrice}>{formatPrice(p.precio)}</span>
               </label>
             ))}
           </div>

@@ -4,7 +4,7 @@ import { Trash2 } from "lucide-react";
 import Stepper from "@/components/ui/Stepper";
 import ProductImage from "@/components/menu/ProductImage";
 import { removeItem, updateItem } from "@/lib/cart";
-import { MAX_MEATS, baseMeats, formatPrice, isCustomizable, meatLabel } from "@/lib/site";
+import { MAX_MEATS, baseMeats, formatPrice, isCustomizable, meatLabel, packUnits, productPacks } from "@/lib/site";
 import s from "./checkout.module.css";
 
 export default function CartLine({ line }) {
@@ -12,6 +12,9 @@ export default function CartLine({ line }) {
   const custom = isCustomizable(product);
   const base = baseMeats(product);
   const [nota, setNota] = useState(line.nota || "");
+  const packs = productPacks(product);
+  const currentPack = packs.find((p) => p.key === line.pack);
+  const packId = `pack-${line.key}`;
   const meatsId = `meats-${line.key}`;
   const notaId = `nota-${line.key}`;
 
@@ -26,7 +29,10 @@ export default function CartLine({ line }) {
           <h3 className={s.lineName}>{product.nombre}</h3>
           <span className={s.lineTotal}>{formatPrice(line.total)}</span>
         </div>
-        <p className={s.lineUnit}>{formatPrice(line.unit)} c/u</p>
+        <p className={s.lineUnit}>
+          {currentPack ? `${currentPack.key}: ` : ""}
+          {formatPrice(line.unit)} c/u
+        </p>
 
         {custom && meatOptions.length > 1 ? (
           <div className={s.lineField}>
@@ -46,6 +52,19 @@ export default function CartLine({ line }) {
           </div>
         ) : null}
 
+        {packs.length > 1 ? (
+          <div className={s.lineField}>
+            <label htmlFor={packId}>Cantidad</label>
+            <select id={packId} className="input" value={line.pack ?? packs[0].key} onChange={(e) => updateItem(line.key, { pack: e.target.value })}>
+              {packs.map((p) => (
+                <option key={p.key} value={p.key}>
+                  {p.key} ({packUnits(p.cantidad)})
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : null}
+
         <div className={s.lineField}>
           <label htmlFor={notaId}>Aclaraciones</label>
           <input
@@ -53,7 +72,7 @@ export default function CartLine({ line }) {
             className="input"
             value={nota}
             maxLength={200}
-            placeholder="Ej: sin cebolla"
+            placeholder="Ej: sin azúcar"
             onChange={(e) => setNota(e.target.value)}
             onBlur={() => {
               if (nota.trim() !== (line.nota || "")) updateItem(line.key, { nota: nota.trim() });

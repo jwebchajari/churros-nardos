@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/lib/cart";
-import { baseMeats, clampMeats, formatPrice, isCustomizable, linePrice } from "@/lib/site";
+import { baseMeats, clampMeats, formatPrice, isCustomizable, linePrice, resolvePack } from "@/lib/site";
 import s from "./menu.module.css";
 
 /** Totales del carrito con precios del servidor. Ignora productos que ya no existen. */
@@ -17,10 +17,11 @@ export function priceCart(items, productos) {
     // Un carrito guardado puede traer una cantidad de carnes que ya no existe.
     const base = baseMeats(product);
     const meats = isCustomizable(product) ? clampMeats(it.meats ?? base, base) : null;
-    const unit = linePrice(product, { meats });
+    const pack = resolvePack(product, it.pack)?.key ?? null;
+    const unit = linePrice(product, { meats, pack });
     count += it.qty;
     subtotal += unit * it.qty;
-    lines.push({ ...it, meats, product, unit, total: unit * it.qty });
+    lines.push({ ...it, meats, pack, product, unit, total: unit * it.qty });
   }
   return { count, subtotal, lines };
 }

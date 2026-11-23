@@ -1,10 +1,20 @@
 "use client";
-import { SITE_NAME, formatPrice, hasOffer, productPath, unitPrice } from "@/lib/site";
+import { SITE_NAME, formatPrice, hasOffer, productPath, productPacks, resolvePack, unitPrice } from "@/lib/site";
 import ShareButton from "@/components/ui/ShareButton";
 import ProductImage from "./ProductImage";
 import s from "./menu.module.css";
 
-export function Price({ product, big = false }) {
+export function Price({ product, big = false, pack = null }) {
+  const packs = productPacks(product);
+  if (packs.length) {
+    const chosen = pack || packs.length === 1 ? resolvePack(product, pack) : null;
+    return (
+      <span className={`${s.price} ${big ? s.priceBig : ""}`}>
+        <small className={s.pricePack}>{chosen ? chosen.key : "Desde"}</small>
+        <span>{formatPrice(chosen ? chosen.precio : Math.min(...packs.map((p) => p.precio)))}</span>
+      </span>
+    );
+  }
   const offer = hasOffer(product);
   return (
     <span className={`${s.price} ${big ? s.priceBig : ""}`}>
@@ -22,6 +32,8 @@ export function Price({ product, big = false }) {
 /** Renglón de pizarra: nombre, puntos guía y precio. Toda la fila abre la ficha (::after del botón). */
 export default function ProductRow({ product, onOpen, large = false }) {
   const hasImage = Boolean(product.imagen);
+  const packs = productPacks(product);
+  const showPackList = packs.length > 1;
   return (
     <li className={`${s.row} ${hasImage ? s.rowHasImg : ""}`}>
       {hasImage ? (
@@ -34,9 +46,24 @@ export default function ProductRow({ product, onOpen, large = false }) {
               {product.nombre}
             </button>
           </h3>
-          <span className={s.rowLeader} aria-hidden />
-          <Price product={product} />
+          {showPackList ? null : (
+            <>
+              <span className={s.rowLeader} aria-hidden />
+              <Price product={product} />
+            </>
+          )}
         </div>
+        {showPackList ? (
+          <ul className={s.packList} aria-label={`Precios de ${product.nombre}`}>
+            {packs.map((p) => (
+              <li key={p.key}>
+                <span>{p.key}</span>
+                <span className={s.rowLeader} aria-hidden />
+                <span className={s.packPrice}>{formatPrice(p.precio)}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
         {product.descripcion ? <p className={s.rowDesc}>{product.descripcion}</p> : null}
         <div className={s.rowMeta}>
           {hasOffer(product) ? <span className={s.badge}>Oferta</span> : null}

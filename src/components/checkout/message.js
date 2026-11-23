@@ -1,4 +1,4 @@
-import { SITE_NAME, envioLabel, formatPrice, fullAddress, includesFries, isCustomizable, meatLabel, paymentLabel, shippingCost, shippingZone } from "@/lib/site";
+import { SITE_NAME, envioLabel, formatPrice, fullAddress, includesFries, isCustomizable, meatLabel, packUnits, paymentLabel, productPacks, shippingCost, shippingZone } from "@/lib/site";
 
 /**
  * Mensaje de WhatsApp en texto plano con negritas (*...*).
@@ -30,6 +30,8 @@ export function buildOrderMessage({ datos, lines, subtotal, buyer }) {
   out.push("*Detalle*");
   for (const l of lines) {
     out.push(`${l.qty} x ${l.product.nombre}: ${formatPrice(l.total)}`);
+    const pack = productPacks(l.product).find((p) => p.key === l.pack);
+    if (pack) out.push(`   - Presentación ${pack.key}: ${packUnits(pack.cantidad * l.qty)} en total`);
     if (isCustomizable(l.product) && l.meats) out.push(`   - ${meatLabel(l.meats)}`);
     if (includesFries(l.product)) out.push("   - Con papas fritas");
     if (l.nota) out.push(`   - Aclaración: ${l.nota}`);

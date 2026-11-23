@@ -1,5 +1,5 @@
 // Normalización de datos de la base. Sin dependencias de runtime: sirve en server, cliente y OG.
-import { CATEGORIES, categoryOf, MAX_MEATS, MEAT_PRICE_KEYS, MIN_MEATS } from "./site";
+import { categoryAnchor, categoryLabel, categoryOf, categoryRank, MAX_MEATS, MEAT_PRICE_KEYS, MIN_MEATS, cleanPacks } from "./site";
 
 function str(v, max = 500) {
   return typeof v === "string" ? v.trim().slice(0, max) : "";
@@ -34,16 +34,21 @@ export function normalizeProduct(id, raw) {
     // 0 = no se eligen carnes. Las hamburguesas sin dato arrancan en 1.
     medallones: categoria === "bebidas" ? 0 : medOk ? med : categoria === "hamburguesas" ? MIN_MEATS : 0,
     precios: Object.fromEntries(Object.values(MEAT_PRICE_KEYS).map((k) => [k, num(r.precios?.[k])])),
+    presentaciones: cleanPacks(r.presentaciones),
     oculto: Boolean(r.oculto),
   };
 }
 
 export function normalizeProducts(raw) {
   if (!raw || typeof raw !== "object") return [];
-  const order = Object.fromEntries(CATEGORIES.map((c, i) => [c.id, i]));
   return Object.entries(raw)
     .map(([id, p]) => normalizeProduct(id, p))
-    .sort((a, b) => order[a.categoria] - order[b.categoria] || a.nombre.localeCompare(b.nombre, "es"));
+    .sort(
+      (a, b) =>
+        categoryRank(a.categoria) - categoryRank(b.categoria) ||
+        categoryLabel(a.categoria).localeCompare(categoryLabel(b.categoria), "es") ||
+        a.nombre.localeCompare(b.nombre, "es")
+    );
 }
 
 export function normalizeDatos(raw) {
@@ -64,10 +69,14 @@ export function normalizeDatos(raw) {
 /** Hasta esta cantidad la carta se muestra con fotos grandes y sin barra de categorías. */
 export const FEW_PRODUCTS = 6;
 
-/** Agrupa por categoría en el orden de CATEGORIES, solo las que tienen productos visibles. */
-export function groupByCategory(products) {
-  return CATEGORIES.map((c) => ({
-    ...c,
-    items: products.filter((p) => p.categoria === c.id && !p.oculto),
-  })).filter((g) => g.items.length > 0);
+/** Agrupa por categoría, comunes y propias del local. Los ocultos solo entran si se piden. */
+export function groupByCategory(products, { hidden = false } = {}) {
+  const groups = new Map();
+  for (const p of products) {
+    if (p.oculto && !hidden) continue;
+    const id = categoryAnchor(p.categoria);
+    if (!groups.has(id)) groups.set(id, { id, label: categoryLabel(p.categoria), rank: categoryRank(p.categoria), items: [] });
+    groups.get(id).items.push(p);
+  }
+  return [...groups.values()].sort((a, b) => a.rank - b.rank || a.label.localeCompare(b.label, "es"));
 }

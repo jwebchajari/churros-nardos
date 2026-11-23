@@ -818,3 +818,32 @@
     grid-column: 1 / -1;
   }
 }
+
+/* ---------- Venta por cantidad ---------- */
+.pricePack {
+  font-size: 0.72em;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.packList {
+  list-style: none;
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.packList li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.packPrice {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--sand);
+  font-variant-numeric: tabular-nums;
+}

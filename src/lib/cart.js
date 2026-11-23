@@ -63,12 +63,12 @@ export function useCart() {
   return useSyncExternalStore(subscribe, read, () => EMPTY);
 }
 
-export function lineKey({ id, meats, nota }) {
-  return [id, meats ?? "", (nota || "").trim().toLowerCase()].join("|");
+export function lineKey({ id, meats, pack, nota }) {
+  return [id, meats ?? "", pack ?? "", (nota || "").trim().toLowerCase()].join("|");
 }
 
-export function addItem({ id, qty = 1, meats = null, nota = "" }) {
-  const item = { id, qty, meats, nota: nota.trim().slice(0, 200) };
+export function addItem({ id, qty = 1, meats = null, pack = null, nota = "" }) {
+  const item = { id, qty, meats, pack, nota: nota.trim().slice(0, 200) };
   item.key = lineKey(item);
   const items = read();
   const found = items.find((i) => i.key === item.key);

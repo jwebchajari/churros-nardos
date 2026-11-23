@@ -1,4 +1,4 @@
-import { PAYMENT_METHODS, SITE_COUNTRY, SITE_CITY, SITE_DESCRIPTION, SITE_NAME, SITE_PROVINCE, SITE_URL, productUrl, unitPrice, waNumber, instagramUrl, facebookUrl } from "./site";
+import { PAYMENT_METHODS, SITE_COUNTRY, SITE_CITY, SITE_DESCRIPTION, SITE_NAME, SITE_PROVINCE, SITE_URL, productPacks, productUrl, unitPrice, waNumber, instagramUrl, facebookUrl } from "./site";
 import { openingHoursSpec } from "@/utils/horarios";
 
 export function restaurantJsonLd({ datos, horarios }) {
@@ -33,6 +33,7 @@ export function restaurantJsonLd({ datos, horarios }) {
 }
 
 export function productJsonLd(product) {
+  const prices = productPacks(product).map((p) => p.precio);
   return {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -42,8 +43,9 @@ export function productJsonLd(product) {
     url: productUrl(product.id),
     brand: { "@type": "Brand", name: SITE_NAME },
     offers: {
-      "@type": "Offer",
-      price: unitPrice(product),
+      ...(prices.length > 1
+        ? { "@type": "AggregateOffer", lowPrice: Math.min(...prices), highPrice: Math.max(...prices), offerCount: prices.length }
+        : { "@type": "Offer", price: unitPrice(product) }),
       priceCurrency: "ARS",
       availability: "https://schema.org/InStock",
       url: productUrl(product.id),
