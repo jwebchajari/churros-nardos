@@ -1,0 +1,237 @@
+/* Tokens de marca: Churros Nardo’s. Cambiar de marca = cambiar estos tokens. */
+:root {
+  --wood: #2c1f16;
+  --sand: #ecd9ae;
+  --cream: #f7eedc;
+
+  --bg: var(--wood);
+  --surface: #38281c;
+  --surface-2: #453224;
+  --surface-3: #543e2d;
+  --line: rgba(236, 217, 174, 0.16);
+  --line-strong: rgba(236, 217, 174, 0.34);
+
+  --text: var(--cream);
+  --text-muted: #d9c8a6;
+  --text-faint: #c4b190;
+
+  --accent: var(--sand);
+  --accent-fill: var(--sand); /* con texto madera: contraste 11.5:1 */
+  --accent-fill-hover: #dcc592;
+  --accent-soft: rgba(236, 217, 174, 0.14);
+  --on-accent: var(--wood);
+
+  --ok: #8fd19e;
+  --ok-soft: rgba(143, 209, 158, 0.14);
+  --warn: #f2b95c;
+  --danger: #ff9a85;
+
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 24px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --shadow-up: 0 -8px 30px rgba(0, 0, 0, 0.6);
+
+  --header-h: 56px;
+  --nav-h: 56px;
+  --tap: 44px;
+  --gutter: 16px;
+  --maxw: 760px;
+
+  --font-display: var(--font-brand), Georgia, serif;
+  --font-body: var(--font-text), system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--nav-h) + 16px);
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--bg) url("/wood.webp");
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: var(--accent-fill);
+  color: var(--on-accent);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Botones compartidos */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--tap);
+  padding: 0 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1;
+  transition: background-color 0.15s, transform 0.1s, border-color 0.15s;
+  text-align: center;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: var(--accent-fill);
+  color: var(--on-accent);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-fill-hover);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+}
+
+.btn-ghost {
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  border-color: var(--text);
+}
+
+.btn-whatsapp {
+  background: #15803d;
+  color: #fff;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-lg {
+  min-height: 54px;
+  font-size: 16px;
+}
+
+/* Campos de formulario compartidos */
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field > span,
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.input {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-strong);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 16px; /* evita zoom en iOS */
+}
+
+.input::placeholder {
+  color: var(--text-faint);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+textarea.input {
+  min-height: 84px;
+  resize: vertical;
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--text-faint);
+}
+
+.error-text {
+  font-size: 14px;
+  color: var(--danger);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
