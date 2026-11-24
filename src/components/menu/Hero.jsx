@@ -36,9 +36,6 @@ export default function Hero({ datos, horarios, onInfo, asTitle = true }) {
   return (
     <header className={s.hero}>
       <div className={s.heroBoard}>
-        {["tl", "tr", "bl", "br"].map((c) => (
-          <i key={c} className={s.corner} data-pos={c} aria-hidden />
-        ))}
         <img className={s.heroLogo} src="/logo-hero.webp" alt={`Logo de ${name}`} width={156} height={156} fetchPriority="high" />
         <Title className={s.heroTitle}>{name}</Title>
         <button type="button" className={s.statusBtn} onClick={onInfo} aria-haspopup="dialog">

@@ -21,7 +21,7 @@
 }
 
 .sheet::backdrop {
-  background: rgba(44, 31, 22, 0.72);
+  background: rgba(44, 31, 22, 0.5);
   backdrop-filter: blur(2px);
 }
 
@@ -119,15 +119,15 @@
   height: var(--tap);
   border-radius: 999px;
   /* Oscuro con borde claro: se distingue sobre la foto y sobre el fondo crema. */
-  background: var(--wood);
-  color: var(--sand);
-  box-shadow: 0 0 0 2px var(--sand), 0 3px 10px rgba(44, 31, 22, 0.45);
+  background: var(--accent-fill);
+  color: #ffffff;
+  box-shadow: 0 0 0 2px #ffffff, 0 3px 10px rgba(44, 31, 22, 0.35);
   flex-shrink: 0;
   transition: background-color 0.15s;
 }
 
 .iconBtn:hover {
-  background: #543e2d;
+  background: var(--accent-fill-hover);
 }
 
 /* ---------- Stepper ---------- */

@@ -111,7 +111,7 @@ export default function CheckoutApp({ data }) {
 
       <section className={s.block} aria-labelledby="h-pedido">
         <h2 id="h-pedido" className={s.blockTitle}>
-          Tu pedido
+          Productos
           <span className={s.blockCount}>{packUnits(units)}</span>
         </h2>
         <ul className={s.lines}>

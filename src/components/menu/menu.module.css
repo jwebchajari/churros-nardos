@@ -5,7 +5,7 @@
   padding-bottom: 104px;
 }
 
-/* ---------- Hero: cartel oscuro, con sus propios tokens sobre el fondo claro ---------- */
+/* ---------- Hero: tarjeta blanca con el logo ---------- */
 .hero {
   padding: calc(16px + env(safe-area-inset-top)) var(--gutter) 4px;
 }
@@ -17,42 +17,17 @@
   gap: 6px;
   padding: 30px 22px 22px;
   text-align: center;
-  --text: var(--cream);
-  --text-muted: #d9c8a6;
-  --text-faint: #c4b190;
-  --surface-3: #543e2d;
-  --accent: var(--sand);
-  --ok: #8fd19e;
-  --ok-soft: rgba(143, 209, 158, 0.14);
-  --line-strong: rgba(236, 217, 174, 0.34);
-  color: var(--text);
-  background: var(--wood);
-  border: 1px solid var(--sand);
-  outline: 1px solid var(--line-strong);
-  outline-offset: -7px;
-  border-radius: 3px;
-  box-shadow: 0 14px 30px rgba(20, 13, 9, 0.4);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(74, 47, 28, 0.07);
 }
-
-.corner {
-  position: absolute;
-  width: 11px;
-  height: 11px;
-  border: 1.5px solid var(--sand);
-  border-radius: 50%;
-  background: var(--wood);
-}
-
-.corner[data-pos^="t"] { top: -6px; }
-.corner[data-pos^="b"] { bottom: -6px; }
-.corner[data-pos$="l"] { left: -6px; }
-.corner[data-pos$="r"] { right: -6px; }
 
 .heroLogo {
   width: 156px;
   height: 156px;
   border-radius: 50%;
-  box-shadow: 0 10px 24px rgba(20, 13, 9, 0.5);
+  box-shadow: 0 4px 14px rgba(74, 47, 28, 0.22);
 }
 
 .heroTitle {
@@ -61,7 +36,7 @@
   font-weight: 400;
   font-size: clamp(36px, 10.5vw, 50px);
   line-height: 1.05;
-  color: var(--sand);
+  color: var(--accent);
   text-wrap: balance;
 }
 
@@ -103,7 +78,7 @@
   align-items: center;
   gap: 7px;
   padding: 5px 12px;
-  border-radius: 3px;
+  border-radius: 999px;
   font-size: 14px;
   font-weight: 700;
   background: var(--surface-3);
@@ -136,7 +111,7 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  background: rgba(216, 189, 148, 0.94);
+  background: rgba(250, 247, 240, 0.95);
   backdrop-filter: saturate(1.4) blur(10px);
   border-bottom: 1px solid var(--line);
 }
@@ -159,7 +134,7 @@
   align-items: center;
   min-height: var(--tap);
   padding: 0 16px;
-  border-radius: 3px;
+  border-radius: 999px;
   border: 1px solid var(--line-strong);
   font-size: 15px;
   font-weight: 600;
@@ -198,7 +173,7 @@
   font-weight: 400;
   font-size: 34px;
   line-height: 1.1;
-  color: var(--text);
+  color: var(--accent);
 }
 
 .sectionTitle::before,
@@ -226,7 +201,7 @@
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(44, 31, 22, 0.14);
+  box-shadow: 0 1px 4px rgba(74, 47, 28, 0.07);
 }
 
 .rowHasImg {
@@ -311,7 +286,7 @@
   align-items: center;
   min-height: 38px;
   padding: 0 20px;
-  border-radius: 3px;
+  border-radius: 8px;
   background: var(--accent-fill);
   color: var(--on-accent);
   font-weight: 800;
@@ -605,7 +580,7 @@
   bottom: 0;
   z-index: 30;
   padding: 24px var(--gutter) calc(12px + env(safe-area-inset-bottom));
-  background: linear-gradient(to top, rgba(216, 189, 148, 0.95) 45%, rgba(216, 189, 148, 0));
+  background: linear-gradient(to top, rgba(250, 247, 240, 0.96) 45%, rgba(250, 247, 240, 0));
   pointer-events: none;
 }
 
@@ -618,11 +593,11 @@
   min-height: 58px;
   margin: 0 auto;
   padding: 0 20px 0 10px;
-  border-radius: 6px;
+  border-radius: 12px;
   background: var(--accent-fill);
   color: var(--on-accent);
   font-weight: 700;
-  box-shadow: 0 10px 30px rgba(20, 13, 9, 0.45);
+  box-shadow: 0 8px 22px rgba(74, 47, 28, 0.28);
   transition: background-color 0.15s, transform 0.1s;
 }
 
@@ -640,9 +615,9 @@
   min-width: 38px;
   height: 38px;
   padding: 0 8px;
-  border-radius: 3px;
-  background: var(--sand);
-  color: var(--wood);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--brown);
   font-variant-numeric: tabular-nums;
 }
 
